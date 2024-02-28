@@ -16,10 +16,8 @@ public class StudentController {
     private final StudentService studentService;
 
     @GetMapping("/{id}")
-    public Mono<ResponseEntity<Student>> getStudent(@PathVariable long id) {
-        return studentService.findStudentById(id)
-                .map(ResponseEntity::ok)
-                .defaultIfEmpty(ResponseEntity.notFound().build());
+    public Mono<Student> getStudent(@PathVariable long id) {
+        return studentService.findStudentById(id);
     }
 
     @GetMapping
@@ -33,19 +31,15 @@ public class StudentController {
     }
 
     @PutMapping("/{id}")
-    public Mono<ResponseEntity<Student>> updateStudent(@PathVariable long id, @RequestBody Student student) {
-        return studentService.updateStudent(id, student)
-                .map(ResponseEntity::ok)
-                .defaultIfEmpty(ResponseEntity.notFound().build());
+    public Mono<Student> updateStudent(@PathVariable long id, @RequestBody Student student) {
+        return studentService.updateStudent(id, student);
     }
 
     @DeleteMapping("/{id}")
-    public Mono<ResponseEntity<Void>> deleteStudent(@PathVariable long id) {
+    public Mono<Void> deleteStudent(@PathVariable long id) {
         return studentService.findStudentById(id)
                 .flatMap(s ->
                         studentService.deleteStudent(s)
-                                .then(Mono.just(new ResponseEntity<Void>(HttpStatus.OK)))
-                )
-                .defaultIfEmpty(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+                                .then(Mono.empty()));
     }
 }

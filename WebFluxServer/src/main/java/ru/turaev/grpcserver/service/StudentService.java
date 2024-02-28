@@ -13,22 +13,22 @@ public class StudentService {
     private final StudentRepository studentRepository;
 
     public Mono<Student> findStudentById(long id) {
-        return Mono.empty();
+        return studentRepository.findStudentById(id);
     }
 
     public Flux<Student> findStudentsByName(String name) {
-        return Flux.empty();
+        return studentRepository.findStudentsByName(name);
     }
 
     public Mono<Student> addNewStudent(Student student) {
-        return Mono.empty();
+        return studentRepository.addNewStudent(student);
     }
 
     public Mono<Student> updateStudent(long id, Student student) {
-        return Mono.empty();
+        return studentRepository.updateStudent(id, student);
     }
 
     public Mono<Student> deleteStudent(Student student) {
-        return Mono.empty();
+        return studentRepository.deleteStudent(student);
     }
 }

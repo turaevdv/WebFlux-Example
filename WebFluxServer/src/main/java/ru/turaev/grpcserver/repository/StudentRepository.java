@@ -7,11 +7,13 @@ import ru.turaev.grpcserver.model.Student;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Component
 public class StudentRepository {
     private final List<Student> studentList = new ArrayList<>();
+    private static int id = 0;
 
     public Mono<Student> findStudentById(long id) {
         return Mono.justOrEmpty(studentList.stream().filter(student -> student.getId() == id).findFirst());
@@ -22,14 +24,29 @@ public class StudentRepository {
     }
 
     public Mono<Student> addNewStudent(Student student) {
-        return Mono.empty();
+        student.setId(++id);
+        studentList.add(student);
+        return Mono.just(student);
     }
 
     public Mono<Student> updateStudent(long id, Student student) {
-        return Mono.empty();
+        Optional<Student> optionalStudent = studentList.stream().filter(st-> st.getId() == id).findFirst();
+        if (optionalStudent.isEmpty()) {
+            return Mono.empty();
+        }
+        Student st = optionalStudent.get();
+        st.setName(student.getName());
+        st.setBirthDay(student.getBirthDay());
+
+        return Mono.just(st);
     }
 
     public Mono<Student> deleteStudent(Student student) {
-        return Mono.empty();
+        Mono<Student> studentMono = findStudentById(student.getId());
+
+        findStudentById(student.getId())
+                .doOnSuccess(studentList::remove);
+
+        return studentMono;
     }
 }
